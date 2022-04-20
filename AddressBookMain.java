@@ -1,12 +1,12 @@
 package com.AddressBook_D22;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Map.Entry;;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class AddressBookMain {
     private static Scanner sc = new Scanner(System.in);
@@ -178,7 +178,7 @@ public class AddressBookMain {
                 Contact contactperson = contactDetails.get(i);
                 if (!contactperson.getFirstName().equals("")) {
 
-                    System.out.println("Conatct Details :");
+                    System.out.println("Contact Details :");
                     System.out.println("Book  Name --- " + set.getKey());
                     System.out.println("FirstName :" + contactperson.getFirstName() + "      LastName :"
                             + contactperson.getLastName() + "     Address :" + contactperson.getAddress()
@@ -308,7 +308,7 @@ public class AddressBookMain {
 
             } else {
 
-                System.out.println("This peson not present in this city or state");
+                System.out.println("This person not present in this city or state");
             }
 
         }
@@ -325,6 +325,22 @@ public class AddressBookMain {
             System.out.println("Person Name and His/her State");
             contactsList.stream()
                     .forEachOrdered(con -> System.out.println(con.getFirstName() + "     " + con.getState()));
+        }
+
+    }
+
+    public void numberOfContactsCountByCityAndState() {
+        List<Contact> contactsList = new ArrayList<>();
+        for (Map.Entry<String, AddressBook> set : addressBookSystem.entrySet()) {
+            AddressBook addressBook = set.getValue();
+            contactsList = addressBook.getContacts();
+            Map<Object, Integer> list = contactsList.parallelStream()
+                    .collect(Collectors.toConcurrentMap(w -> w.getCity(), w -> 1, Integer::sum));
+            Map<Object, Integer> state = contactsList.parallelStream()
+                    .collect(Collectors.toConcurrentMap(w -> w.getState(), w -> 1, Integer::sum));
+            System.out.println("City Name" + list.keySet() + ":  Number of persons in City " + list.values()
+                    + "        State Name" + state.keySet() + ":  Number of persons in State " + state.values());
+
         }
 
     }
